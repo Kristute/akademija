@@ -1,10 +1,11 @@
 import axios from 'axios';
-import { endpoints } from '../config';
-import { setMovieList } from './actions';
+import { setMostPopularMovies } from './actions';
+import { endpoints } from './config';
 
-export const getMovieList = () => (dispatch) => {
+export const getMostPopularMovies = () => (dispatch) => {
   axios
     .get(endpoints.mostPopularMovies())
-    .then((res) => dispatch(setMovieList(res.data.results)))
-    .catch((error) => console.log(error));
+    .then((data) => {
+      dispatch(setMostPopularMovies(data.data.results));
+    });
 };

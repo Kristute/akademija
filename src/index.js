@@ -1,11 +1,12 @@
-import './assets/style.scss';
 import React from 'react';
-import { render } from 'react-dom';
-import { applyMiddleware, createStore } from 'redux';
+import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import logger from 'redux-logger';
+import { applyMiddleware, createStore } from 'redux';
+import './index.css';
+import { logger } from 'redux-logger';
 import Thunk from 'redux-thunk';
-import rootReducer from './reducers';
+import { rootReducer } from './reducer';
+import * as serviceWorker from './serviceWorker';
 import App from './components/App';
 
 const store = createStore(
@@ -13,9 +14,11 @@ const store = createStore(
   applyMiddleware(logger, Thunk),
 );
 
-render(
+ReactDOM.render(
   <Provider store={store}>
     <App />
   </Provider>,
-  document.querySelector('#app'),
+  document.getElementById('root')
 );
+
+serviceWorker.unregister();

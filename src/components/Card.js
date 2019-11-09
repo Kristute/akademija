@@ -1,67 +1,47 @@
 import React from 'react';
 
-class Card extends React.Component {
-  constructor() {
-    super();
+export default class Card extends React.Component {
+  constructor(props) {
+    super(props);
     
     this.state = {
-      opened: false,
-    }
+      title: props.title,
+      showDescription: true,
+    };
   }
   
   render() {
-    const {
-      backgroundImage,
-      title,
-      releaseDate,
-      score,
-      votes,
-      description,
-    } = this.props;
-    const { opened } = this.state;
-    
+    const { showDescription } = this.state;
+    const { title, backgroundImage, date, rating, votes, description } = this.props;
     return (
       <div className="card">
-        <div
-          className="card__image"
-          style={{
-            backgroundImage: `url('${backgroundImage}')`,
-          }}
-        />
-    
-        <div className="card__title">
-          {title}
-        </div>
-    
-        <div className="card__like">
-            <i className="fa fa-heart-o" />
-        </div>
-    
-        <div className="card__subtitle">
-            <span>{releaseDate}</span>
-            <span>{score} ({votes} votes)</span>
-        </div>
-    
-        <div className="card-info">
-        <div
-          className="card-info__header"
-          onClick={() => this.setState({ opened: !opened })}>
-          Summary
-        </div>
-          
-          {opened
-            ? (
-              <div className="card-info__description">
-                {description}
-              </div>
-            )
-            : null
-          }
-    </div>
-</div>
-
+          <div
+            className="card__image"
+            style={{
+              backgroundImage: `url(${backgroundImage})`
+            }}/>
+      
+          <div className="card__title">
+              {title}
+          </div>
+      
+          <div className="card__like">
+              <i className="fa fa-heart-o" />
+          </div>
+      
+          <div className="card__subtitle">
+              <span>{date}</span>
+              <span>{rating} ({votes} votes)</span>
+          </div>
+      
+          <div className="card-info">
+            <div className="card-info__header">Summary</div>
+            <button onClick={() => { this.setState({ showDescription: !showDescription })}}>Toggle</button>
+            <div className="card-info__description">
+              {showDescription ? description : null}
+            </div>
+          </div>
+      </div>
     );
   }
 }
-
-export default Card;

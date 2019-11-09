@@ -1,6 +1,3 @@
-$gutter: 20px;
-$color-gray: #bdbcdd;
-
 html,
 body {
   width:100%;
@@ -22,16 +19,17 @@ body {
   box-sizing: border-box;
 }
 
-.container {
+#root {
   width: 100%;
   height: 100%;
-  padding: $gutter * 2;
+  margin: 0 auto;
   overflow-y: auto;
 }
 
-#app {
-  width: 1440px;
+.container {
+  width: 1200px;
   height: 100%;
+  padding: 40px;
   margin: 0 auto;
 }
 
@@ -60,7 +58,7 @@ body {
   position: relative;
   display: inline-block;
   width: calc(33.33333% - 40px);
-  margin: $gutter;
+  margin: 20px;
   box-shadow: 5px 5px 115px -14px black;
   background: rgb(61, 52, 52);
   cursor: pointer;
@@ -69,27 +67,27 @@ body {
 .card__image {
   position: relative;
   padding-bottom: 100%;
-  margin-bottom: $gutter;
+  margin-bottom: 20px;
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;
+}
 
-  &:after {
-    content: '';
-    height: 250px;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(transparent, rgb(61, 52, 52));
-  }
+.card__image:after {
+  content: '';
+  height: 250px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgb(61, 52, 52));
 }
 
 .card__title {
   display: inline-block;
   float: left;
   width: calc(100% - 50px);
-  padding: 0 $gutter;
+  padding: 0 20px;
   font-size: 28px;
   line-height: 26px;
   font-weight: bold;
@@ -102,46 +100,42 @@ body {
   margin: 0 auto;
   color: #ff6c80;
   font-size: 26px;
+}
 
-  i {
-    transition: transform 0.23s ease-in-out;
+.card__like i {
+  transition: transform 0.23s ease-in-out;
+}
 
-    &:hover {
-      transform: scale(1.4);
-    }
-  }
+.card__like i:hover {
+   transform: scale(1.4);
 }
 
 .card__subtitle {
-  padding: 0 $gutter;
-  margin-bottom: $gutter * 2;
+  padding: 0 20px;
+  margin-bottom: 40px;
   font-size: 12px;
-  color: $color-gray;
+  color: #bdbcdd;
   display: inline-block;
   vertical-align: middle;
+}
 
-  span {
-    &:after {
-      content: '';
-      display: inline-block;
-      width: 4px;
-      height: 4px;
-      border-radius: 4px;
-      margin: 0 5px;
-      vertical-align: middle;
-      background: $color-gray;
-    }
+.card__subtitle span:after {
+   content: '';
+   display: inline-block;
+   width: 4px;
+   height: 4px;
+   border-radius: 4px;
+   margin: 0 5px;
+   vertical-align: middle;
+   background: #bdbcdd;
+}
 
-    &:last-child {
-      &:after {
-        display: none;
-      }
-    }
-  }
+.card__subtitle span:last-child:after {
+ display: none;
 }
 
 .card-info {
-  padding: 0 $gutter $gutter * 2;
+  padding: 0 20px 40px;
 }
 
 .card-info__header {
@@ -154,5 +148,5 @@ body {
 .card-info__description {
   font-size: 12px;
   line-height: 22px;
-  color: $color-gray;
+  color: #bdbcdd;
 }
