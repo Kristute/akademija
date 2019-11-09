@@ -24,6 +24,24 @@ const cards = (state = initialStateOfCards, action) => {
       ...state,
       mostPopular: action.list,
     };
+    case 'setMoviesByGenre': return {
+      ...state,
+      mostPopular: action.movies,
+    };
+    default: return state;
+  }
+};
+
+const initialStateOfGenres = {
+  genres: [],
+};
+
+const genres = (state = initialStateOfGenres, action) => {
+  switch (action.type) {
+    case 'setGenre': return {
+      ...state,
+      genres: action.genres,
+    };
     default: return state;
   }
 };
@@ -31,4 +49,5 @@ const cards = (state = initialStateOfCards, action) => {
 export const rootReducer = combineReducers({
   componentState,
   cards,
+  genres,
 });

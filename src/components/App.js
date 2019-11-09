@@ -1,47 +1,25 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import {getMostPopularMovies, getGenre, getMoviesByGenre} from '../thunks';
 import Card from './Card';
 import GenresButton from './GenresButton';
-import axios from 'axios';
-import { endpoints, getImageUrl } from '../config';
+import { getImageUrl } from '../config';
 
 class App extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            list: [],
-            genres: [],
             likedMovies: [],
         };
     }
     componentDidMount() {
-        axios
-            .get(endpoints.mostPopularMovies())
-            .then((data) => {
-
-                this.setState({
-                    list: data.data.results,
-                });
-            });
-        axios
-            .get(endpoints.genres())
-            .then((response) => {
-
-                this.setState({
-                    genres: response.data.genres,
-                });
-            });
+        this.props.onGetMostPopularMovies();
+        this.props.onGetGenre();
     }
 
     getMoviesByGenre = (id) => {
-        return axios
-            .get(endpoints.genreMovies(id))
-            .then((response) => {
-
-                this.setState({
-                    list: response.data.results,
-                });
-            });
+        this.props.onGetMoviesByGenre(id);
     }
 
     likeMovie = (id) => {
@@ -52,7 +30,7 @@ class App extends React.Component {
         }
     }
 
-    isMovieLiked = (id) => this.state.likedMovies.findIndex((likedId) => likedId === id) !== -1;
+    isMovieLiked = (id) => this.props.likedMovies.findIndex((likedId) => likedId === id) !== -1;
 
     dislikeMovie = (id) => {
         const { likedMovies } = this.state;
@@ -69,7 +47,7 @@ class App extends React.Component {
         return (
             <div>
                 <div>
-                    {this.state.genres.map((genre) => (
+                    {this.props.genres.map((genre) => (
                         <GenresButton
                             selectGenre={this.getMoviesByGenre}
                             genre={genre}
@@ -77,7 +55,7 @@ class App extends React.Component {
                     ))}
                 </div>
                 <div>
-                {this.state.list ? this.state.list.map((card) => (
+                {this.props.mostPopularMovies ? this.props.mostPopularMovies.map((card) => (
                     <Card
                         key={card.original_title}
                         backgroundImage={getImageUrl(card.backdrop_path)}
@@ -99,4 +77,18 @@ class App extends React.Component {
     }
 }
 
-export default App;
+const mapStateToProps = (state) => ({
+    showCards: state.componentState.showCards,
+    mostPopularMovies: state.cards.mostPopular,
+    genres: state.genres.genres,
+});
+const mapDispatchToProps = (dispatch) => ({
+    onGetMostPopularMovies: () => dispatch(getMostPopularMovies()),
+    onGetGenre: () => dispatch(getGenre()),
+    onGetMoviesByGenre: (id) => dispatch(getMoviesByGenre(id)),
+});
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(App);
