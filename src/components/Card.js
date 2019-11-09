@@ -5,14 +5,25 @@ export default class Card extends React.Component {
     super(props);
     
     this.state = {
-      title: props.title,
       showDescription: true,
     };
+  }
+
+  like = () => {
+    const { id, likeMovie } = this.props;
+
+    likeMovie(id);
+  }
+
+  dislike = () => {
+    const { id, dislikeMovie } = this.props;
+
+    dislikeMovie(id);
   }
   
   render() {
     const { showDescription } = this.state;
-    const { title, backgroundImage, date, rating, votes, description } = this.props;
+    const { title, backgroundImage, date, rating, votes, description, likedMovie } = this.props;
     return (
       <div className="card">
           <div
@@ -37,6 +48,12 @@ export default class Card extends React.Component {
           <div className="card-info">
             <div className="card-info__header">Summary</div>
             <button onClick={() => { this.setState({ showDescription: !showDescription })}}>Toggle</button>
+            {!likedMovie ? (
+                  <button onClick={this.like}>Sirdute</button>
+              )
+              : (
+                  <button onClick={this.dislike}>Nebemegti</button>
+            )}
             <div className="card-info__description">
               {showDescription ? description : null}
             </div>

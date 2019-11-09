@@ -1,60 +1,102 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { toggleCards } from '../actions';
-import { getMostPopularMovies } from '../thunks';
 import Card from './Card';
-import { getImageUrl } from '../config';
+import GenresButton from './GenresButton';
+import axios from 'axios';
+import { endpoints, getImageUrl } from '../config';
 
 class App extends React.Component {
-  componentDidMount() {
-    this.props.onGetMostPopularMovies();
-  }
-  
-  render() {
-    return (
-      <div className="container">
-        <header>
-          <button
-            style={{ display: 'block', margin: '0 auto' }}
-            onClick={() => this.props.onToggleCards(!this.props.showCards)}
-          >
-            Hide movies
-          </button>
-        </header>
-        
-        {this.props.showCards
-          ? (
-            <div className="cards">
-              {this.props.mostPopularMovies.map((card) => (
-                <Card
-                  key={card.original_title}
-                  backgroundImage={getImageUrl(card.backdrop_path)}
-                  date={card.release_date}
-                  rating={card.vote_average}
-                  votes={card.vote_count}
-                  description={card.overview}
-                  title={card.original_title}
-                />
-              ))}
-            </div>
-          )
-          : null
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            list: [],
+            genres: [],
+            likedMovies: [],
+        };
+    }
+    componentDidMount() {
+        axios
+            .get(endpoints.mostPopularMovies())
+            .then((data) => {
+
+                this.setState({
+                    list: data.data.results,
+                });
+            });
+        axios
+            .get(endpoints.genres())
+            .then((response) => {
+
+                this.setState({
+                    genres: response.data.genres,
+                });
+            });
+    }
+
+    getMoviesByGenre = (id) => {
+        return axios
+            .get(endpoints.genreMovies(id))
+            .then((response) => {
+
+                this.setState({
+                    list: response.data.results,
+                });
+            });
+    }
+
+    likeMovie = (id) => {
+        const { likedMovies } = this.state;
+
+        if(likedMovies.findIndex((likedId) => likedId === id) === -1) {
+            this.setState({ likedMovies: [...likedMovies, id] })
         }
-      </div>
-    );
-  }
+    }
+
+    isMovieLiked = (id) => this.state.likedMovies.findIndex((likedId) => likedId === id) !== -1;
+
+    dislikeMovie = (id) => {
+        const { likedMovies } = this.state;
+        const copyOfLikedMovies = [...likedMovies];
+        const indexOfLikedMovieId = likedMovies.findIndex((likedId) => likedId === id);
+
+        if(indexOfLikedMovieId !== -1) {
+            copyOfLikedMovies.splice(indexOfLikedMovieId, 1)
+            this.setState({ likedMovies: copyOfLikedMovies })
+        }
+    }
+
+    render() {
+        return (
+            <div>
+                <div>
+                    {this.state.genres.map((genre) => (
+                        <GenresButton
+                            selectGenre={this.getMoviesByGenre}
+                            genre={genre}
+                        />
+                    ))}
+                </div>
+                <div>
+                {this.state.list ? this.state.list.map((card) => (
+                    <Card
+                        key={card.original_title}
+                        backgroundImage={getImageUrl(card.backdrop_path)}
+                        date={card.release_date}
+                        rating={card.vote_average}
+                        votes={card.vote_count}
+                        description={card.overview}
+                        title={card.original_title}
+                        id={card.id}
+                        likeMovie={this.likeMovie}
+                        likedMovie={this.isMovieLiked(card.id)}
+                        dislikeMovie={this.dislikeMovie}
+                    />
+                    ))
+                    : <div>loading</div>}
+                </div>
+            </div>
+        );
+    }
 }
 
-const mapStateToProps = (state) => ({
-  showCards: state.componentState.showCards,
-  mostPopularMovies: state.cards.mostPopular,
-});
-const mapDispatchToProps = (dispatch) => ({
-  onToggleCards: (shouldShow) => dispatch(toggleCards(shouldShow)),
-  onGetMostPopularMovies: () => dispatch(getMostPopularMovies()),
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(App);
+export default App;
