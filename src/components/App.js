@@ -30,7 +30,7 @@ class App extends React.Component {
         }
     }
 
-    isMovieLiked = (id) => this.props.likedMovies.findIndex((likedId) => likedId === id) !== -1;
+    isMovieLiked = (id) => this.state.likedMovies.findIndex((likedId) => likedId === id) !== -1;
 
     dislikeMovie = (id) => {
         const { likedMovies } = this.state;
