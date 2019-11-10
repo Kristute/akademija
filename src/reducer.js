@@ -1,19 +1,5 @@
 import { combineReducers } from 'redux';
 
-const initialState = {
-  showCards: true,
-};
-
-const componentState = (state = initialState, action) => {
-  switch (action.type) {
-    case 'toggleCards': return {
-      ...state,
-      showCards: action.shouldShow,
-    };
-    default: return state;
-  }
-};
-
 const initialStateOfCards = {
   mostPopular: [],
 };
@@ -46,8 +32,53 @@ const genres = (state = initialStateOfGenres, action) => {
   }
 };
 
+const initialStateOfLikedMovies = {
+  likedMovies: [],
+};
+
+const likeMovie = (state = initialStateOfLikedMovies, action) => {
+  switch (action.type) {
+    case 'setLikeMovie': return {
+      ...state,
+      likedMovies: [...state.likedMovies, action.movieID],
+    };
+    case 'setDislikeMovie': {
+      const { likedMovies } = state;
+      const copyOfLikedMovies = [...likedMovies];
+      const indexOfLikedMovieId = copyOfLikedMovies.findIndex((likedId) => likedId === action.movieID);
+
+      if(indexOfLikedMovieId !== -1) {
+        copyOfLikedMovies.splice(indexOfLikedMovieId, 1);
+        return {
+          ...state,
+          likedMovies: copyOfLikedMovies,
+        };
+      }
+
+      return {
+        ...state,
+      };
+    }
+    default: return state;
+  }
+};
+
+const logs = (state = {}, action) => {
+  switch (action.type) {
+    case 'setLogs': {
+      const timestamp = new Date().toISOString();
+      return {
+        ...state,
+        [timestamp]: action.text,
+      };
+    }
+    default: return state;
+  }
+};
+
 export const rootReducer = combineReducers({
-  componentState,
   cards,
   genres,
+  likeMovie,
+  logs
 });

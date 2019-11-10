@@ -1,9 +1,12 @@
 import React from 'react';
+import { setLogs } from "../actions";
+import { connect } from "react-redux";
 
-export default class GenresButton extends React.Component {
+class GenresButton extends React.Component {
     selectGenre = () => {
         const { genre, selectGenre: select } = this.props;
         select(genre.id);
+        this.props.onSetLog(`Zanras pakeistas i: ${genre.name}`);
     };
 
     render() {
@@ -14,3 +17,11 @@ export default class GenresButton extends React.Component {
         );
     }
 }
+const mapDispatchToProps = (dispatch) => ({
+    onSetLog: (text) => dispatch(setLogs(text))
+});
+
+export default connect(
+    null,
+    mapDispatchToProps
+)(GenresButton);

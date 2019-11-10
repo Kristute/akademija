@@ -1,47 +1,19 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import {getMostPopularMovies, getGenre, getMoviesByGenre} from '../thunks';
+import { getMostPopularMovies, getGenre, getMoviesByGenre } from '../thunks';
 import Card from './Card';
 import GenresButton from './GenresButton';
 import { getImageUrl } from '../config';
 
 class App extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            likedMovies: [],
-        };
-    }
     componentDidMount() {
         this.props.onGetMostPopularMovies();
         this.props.onGetGenre();
-    }
+    };
 
     getMoviesByGenre = (id) => {
         this.props.onGetMoviesByGenre(id);
-    }
-
-    likeMovie = (id) => {
-        const { likedMovies } = this.state;
-
-        if(likedMovies.findIndex((likedId) => likedId === id) === -1) {
-            this.setState({ likedMovies: [...likedMovies, id] })
-        }
-    }
-
-    isMovieLiked = (id) => this.state.likedMovies.findIndex((likedId) => likedId === id) !== -1;
-
-    dislikeMovie = (id) => {
-        const { likedMovies } = this.state;
-        const copyOfLikedMovies = [...likedMovies];
-        const indexOfLikedMovieId = likedMovies.findIndex((likedId) => likedId === id);
-
-        if(indexOfLikedMovieId !== -1) {
-            copyOfLikedMovies.splice(indexOfLikedMovieId, 1)
-            this.setState({ likedMovies: copyOfLikedMovies })
-        }
-    }
+    };
 
     render() {
         return (
@@ -49,6 +21,7 @@ class App extends React.Component {
                 <div>
                     {this.props.genres.map((genre) => (
                         <GenresButton
+                            key={genre.id}
                             selectGenre={this.getMoviesByGenre}
                             genre={genre}
                         />
@@ -65,9 +38,6 @@ class App extends React.Component {
                         description={card.overview}
                         title={card.original_title}
                         id={card.id}
-                        likeMovie={this.likeMovie}
-                        likedMovie={this.isMovieLiked(card.id)}
-                        dislikeMovie={this.dislikeMovie}
                     />
                     ))
                     : <div>loading</div>}
@@ -78,7 +48,6 @@ class App extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-    showCards: state.componentState.showCards,
     mostPopularMovies: state.cards.mostPopular,
     genres: state.genres.genres,
 });

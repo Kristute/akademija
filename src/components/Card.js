@@ -1,6 +1,8 @@
 import React from 'react';
+import { setDislikeMovie, setLikeMovie } from "../actions";
+import { connect } from "react-redux";
 
-export default class Card extends React.Component {
+class Card extends React.Component {
   constructor(props) {
     super(props);
     
@@ -9,21 +11,23 @@ export default class Card extends React.Component {
     };
   }
 
-  like = () => {
-    const { id, likeMovie } = this.props;
+  isMovieLiked = () => this.props.likedMovies.findIndex((likedId) => likedId === this.props.id) !== -1;
 
-    likeMovie(id);
-  }
+  likeMovie = () => {
+    const { likedMovies, id } = this.props;
 
-  dislike = () => {
-    const { id, dislikeMovie } = this.props;
+    if(likedMovies.findIndex((likedId) => likedId === id) === -1) {
+        this.props.onSetLikeMovie(id);
+    }
+  };
 
-    dislikeMovie(id);
-  }
+  dislikeMovie = () => {
+    this.props.onSetDislikeMovie(this.props.id);
+  };
   
   render() {
     const { showDescription } = this.state;
-    const { title, backgroundImage, date, rating, votes, description, likedMovie } = this.props;
+    const { title, backgroundImage, date, rating, votes, description } = this.props;
     return (
       <div className="card">
           <div
@@ -48,11 +52,11 @@ export default class Card extends React.Component {
           <div className="card-info">
             <div className="card-info__header">Summary</div>
             <button onClick={() => { this.setState({ showDescription: !showDescription })}}>Toggle</button>
-            {!likedMovie ? (
-                  <button onClick={this.like}>Sirdute</button>
+            {!this.isMovieLiked() ? (
+                  <button onClick={this.likeMovie}>Širdutė</button>
               )
               : (
-                  <button onClick={this.dislike}>Nebemegti</button>
+                  <button onClick={this.dislikeMovie}>Nebemėgti</button>
             )}
             <div className="card-info__description">
               {showDescription ? description : null}
@@ -62,3 +66,16 @@ export default class Card extends React.Component {
     );
   }
 }
+
+const mapStateToProps = (state) => ({
+    likedMovies: state.likeMovie.likedMovies,
+});
+const mapDispatchToProps = (dispatch) => ({
+    onSetLikeMovie: (movieID) => dispatch(setLikeMovie(movieID)),
+    onSetDislikeMovie: (movieID) => dispatch(setDislikeMovie(movieID)),
+});
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(Card);
