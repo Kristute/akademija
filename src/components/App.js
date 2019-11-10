@@ -30,7 +30,7 @@ class App extends React.Component {
                 <div>
                 {this.props.mostPopularMovies ? this.props.mostPopularMovies.map((card) => (
                     <Card
-                        key={card.original_title}
+                        key={card.original_title + card.id}
                         backgroundImage={getImageUrl(card.backdrop_path)}
                         date={card.release_date}
                         rating={card.vote_average}
